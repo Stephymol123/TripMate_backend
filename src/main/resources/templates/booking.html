@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .navbar {
+            background-color: #0056b3;
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .product-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .sticky-form {
+            position: sticky;
+            top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .weather-card {
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            background-size: cover;
+            background-position: center;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #004494;
+        }
+        .card-title {
+            color: #0056b3;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        ul li strong {
+            font-weight: 600;
+        }
+        #displayTotalPrice {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .weather-icon.sun {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>');
+            animation: rotate 10s linear infinite;
+        }
+
+        .weather-icon.cloud {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>');
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .weather-icon.rain {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>');
+            animation: rain 1s linear infinite;
+        }
+        @keyframes rain {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(20px); }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <img th:src="@{${package.imageUrl}}" th:alt="${package.packName}" class="product-image mb-4">
+                <h1 th:id="pName" th:text="${package.packName}">Package Name</h1>
+                <input type="hidden" th:id="packagecity" th:value="${package.city}">
+                <p class="lead" th:text="${package.description}">Package description goes here.</p>
+                <div class="mb-4">
+                    <h3>Package Details</h3>
+                    <ul>
+                        <li><strong>Location:</strong> <span th:text="${package.city} + ', ' + ${package.state}">City, State</span></li>
+                        <li><strong>Duration:</strong> <span th:text="${package.days} + ' Days / ' + ${package.night} + ' Nights'">Duration</span></li>
+                        <li><strong>Price per Person:</strong> <span th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">$0.00</span></li>
+                    </ul>
+                </div>
+                <div class="weather-card">
+                    <h3>Weather in <span th:text="${package.city}">City Name</span></h3>
+                    <div id="weather-icon" class="weather-icon"></div>
+                    <p id="temperature"></p>
+                    <p id="description"></p>
+                </div>
+                <!-- want add review img here  -->
+                <div class="mt-5">
+                    <h3>Customer Reviews</h3>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <!-- Review 1 -->
+                        <div class="col" th:each="memorie :${memories}">
+                            <div class="card h-100">
+                                <img th:src="@{${memorie.imgUrl}}" alt="Memory Image" class="card-img-top"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <div class="card sticky-form">
+                    <div class="card-body">
+                        <h3 class="card-title">Book This Package</h3>
+                        <form action="/packBook" method="post" id="bookingForm">
+                            <input type="hidden" name="package_id" th:value="${package.id}">
+                            <input type="hidden" name="packageName" th:value="${package.packName}">
+                            <input type="hidden" name="packagePrice" th:value="${package.pricePerPerson}">
+                            <div class="mb-3">
+                                <label for="customerName" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="customerName" name="customerName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="totalPerson" class="form-label">Number of Travelers</label>
+                                <input type="number" class="form-control" id="totalPerson" name="totalPerson" min="1" value="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="travelDate" class="form-label">Travel Date</label>
+                                <input type="date" class="form-control" id="travelDate" name="travelDate" required onfocus="this.min=new Date().toISOString().split('T')[0]" >
+                            </div>
+                            <div class="mb-3">
+                                <label for="hotelName" class="form-label">Select Hotel</label>
+                                <select class="form-select" id="hotelName" name="hotelName" required>
+                                    <option >Select A Hotel</option>
+                                    <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.hotelName}">Hotel Name</option>
+                                </select>
+                            </div> 
+                            <div class="mb-3" id="hotelRates" style="display: none;">
+                                <label class="form-label">Hotel Room Rates</label>
+                                <div id="hotelRateOptions"></div>
+                            </div>
+                            <input type="hidden" name="totalPrice" id="totalPrice" th:value="${package.pricePerPerson}">
+                            <div class="mb-3">
+                                <p>Total Price in Rupee: <span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                            </div>
+                            <div class="mb-3" th:if="${currency != null}">
+                                <p style="font-size: 17px;font-weight:600;">Total Price in Dollar : <span id="dollar" style="font-size: 20px;font-weight:700;" th:text="${#numbers.formatDecimal(currency, 0, 'COMMA', 2, 'POINT')}">$0.00</span></p>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Book Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paymentForm">
+                        <div class="mb-3">
+                            <label for="cardName" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="cardName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" pattern="[0-9]{16}" placeholder="16 digit card number" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" pattern="(0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" pattern="[0-9]{3}" placeholder="3 digit CVV" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Confirm Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Booking Confirmed!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle text-success mb-3" style="font-size: 72px;"></i>
+                    <h4>Thank You!</h4>
+                    <p>Your package has been booked successfully.</p>
+                    <p id="bookingDetails"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const apiKey = 'b1ad394433fdb60d4ed0312361aae1f2';
+        const city = document.getElementById('packagecity').value.trim();
+        console.log(city)
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${apiKey}&units=metric`;
+    
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const temp = data.main.temp;
+                const description = data.weather[0].description;
+                const iconCode = data.weather[0].icon;
+    
+                document.getElementById('temperature').textContent = `${temp}°C`;
+                document.getElementById('description').textContent = description;
+    
+                const weatherIcon = document.getElementById('weather-icon');
+                if (iconCode === '01d' || iconCode === '02d') {
+                    weatherIcon.classList.add('sun');
+                } else if (iconCode === '03d' || iconCode === '04d') {
+                    weatherIcon.classList.add('cloud');
+                } else if (iconCode.startsWith('09') || iconCode.startsWith('10') || iconCode === '11d') {
+                    weatherIcon.classList.add('rain');
+                } else {
+                    weatherIcon.classList.add('cloud'); 
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching weather data:', error);
+                document.getElementById('temperature').textContent = 'No Data Found';
+            });
+    </script>
+
+    
+    <script>
+        function calculateTotalPrice() {
+            const totalPerson = parseInt(document.getElementById('totalPerson').value, 10) || 1; // Default to 1 if no value is provided
+            const packagePrice = parseFloat([[${package.pricePerPerson}]]) || 0; // Price per person from backend
+            const selectedRoomRate = parseFloat(document.querySelector('input[name="roomRate"]:checked')?.value || 0);
+
+            // Calculate the total price in Rupees
+            const packageTotal = totalPerson * packagePrice;
+            const roomTotal = totalPerson * selectedRoomRate;
+            const totalPriceInRupees = packageTotal + roomTotal;
+
+            // Update the total price fields in Rupees
+            document.getElementById('totalPrice').value = totalPriceInRupees.toFixed(2);
+            document.getElementById('displayTotalPrice').textContent = totalPriceInRupees.toLocaleString('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            // Currency conversion to Dollars
+            const currencyRate = parseFloat([[${currency}]]);
+            console.log(currencyRate)
+            console.log(totalPriceInRupees)
+            if (currencyRate > 0) {
+                const totalPriceInDollars = totalPriceInRupees * currencyRate;
+                console.log(totalPriceInDollars)
+                document.getElementById('dollar').textContent = totalPriceInDollars.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            } else {
+                document.getElementById('dollar').textContent = 'N/A';
+            }
+        }
+
+         // Event Listeners
+         document.getElementById('totalPerson').addEventListener('input', calculateTotalPrice);
+         document.getElementById('hotelRateOptions').addEventListener('change', calculateTotalPrice);
+         document.getElementById('hotelName').addEventListener('change', function () {
+             const selectedHotelId = this.value;
+             const url = `/api/hotels/${selectedHotelId}`;
+
+             if (selectedHotelId) {
+                 fetch(url)
+                     .then(response => response.json())
+                     .then(data => {
+                         const hotelRatesDiv = document.getElementById('hotelRates');
+                         const hotelRateOptions = document.getElementById('hotelRateOptions');
+
+                         // Show hotel rates section
+                         hotelRatesDiv.style.display = "block";
+
+                         // Clear previous options
+                         hotelRateOptions.innerHTML = "";
+
+                         // Add AC Room Rate Option
+                         if (data.acRoomCost) {
+                             hotelRateOptions.innerHTML += `
+                                 <div class="form-check">
+                                     <input class="form-check-input" type="radio" name="roomRate" id="acRoom" value="${data.acRoomCost}" required>
+                                     <label class="form-check-label" for="acRoom">AC Room - ₹${data.acRoomCost.toFixed(2)}</label>
+                                 </div>
+                             `;
+                         }
+
+                         // Add Non-AC Room Rate Option
+                         if (data.roomCost) {
+                             hotelRateOptions.innerHTML += `
+                                 <div class="form-check">
+                                     <input class="form-check-input" type="radio" name="roomRate" id="nonAcRoom" value="${data.roomCost}" required>
+                                     <label class="form-check-label" for="nonAcRoom">Non-AC Room - ₹${data.roomCost.toFixed(2)}</label>
+                                 </div>
+                             `;
+                         }
+
+                         // Recalculate the total price after room rate options are loaded
+                         document.querySelectorAll('input[name="roomRate"]').forEach(input => {
+                             input.addEventListener('change', calculateTotalPrice);
+                         });
+                     })
+                     .catch(error => {
+                         console.error('Error fetching hotel details:', error);
+                         document.getElementById('hotelRates').style.display = "none";
+                     });
+             } else {
+                 document.getElementById('hotelRates').style.display = "none";
+             }
+         });
+
+         document.getElementById('bookingForm').addEventListener('submit', function(e) {
+             e.preventDefault();
+
+             // Validate form first
+             const form = e.target;
+             if (form.checkValidity()) {
+                 // Show payment modal
+                 const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+                 paymentModal.show();
+             } else {
+                 form.reportValidity();
+             }
+         });
+
+         // Payment form submission
+         document.getElementById('paymentForm').addEventListener('submit', function(e) {
+             e.preventDefault();
+
+             // Validate payment form
+             const paymentForm = e.target;
+             if (paymentForm.checkValidity()) {
+                 // Hide payment modal
+                 const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                 paymentModal.hide();
+
+                 // Submit the original booking form
+                 const bookingForm = document.getElementById('bookingForm');
+
+                 // Prepare booking details for confirmation
+                 const packageName = bookingForm.querySelector('input[name="packageName"]').value;
+                 const travelDate = bookingForm.querySelector('#travelDate').value;
+                 const totalPerson = bookingForm.querySelector('#totalPerson').value;
+                 const totalPrice = bookingForm.querySelector('#totalPrice').value;
+
+                 // Show confirmation modal
+                 const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                 document.getElementById('bookingDetails').innerHTML = `
+                     Package: ${packageName}<br>
+                     Travel Date: ${travelDate}<br>
+                     Travelers: ${totalPerson}<br>
+                     Total Price: ₹${totalPrice}
+                 `;
+                 confirmationModal.show();
+
+                 // Actually submit the form
+                 bookingForm.submit();
+             } else {
+                 paymentForm.reportValidity();
+             }
+         });
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateTotalPrice();
+        });
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
